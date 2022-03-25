@@ -22,12 +22,12 @@ public class Rabbit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // creates copy attributes to use, instead of altering the files directly
-        for (int i = 0; i < genes.Length; i++)
-        {
-            genes[i].attribute = genes[i].attribute.Duplicate();
-            genes[i].attribute.value = genes[i].attribute.startValue;
-        }
+        //// creates copy attributes to use, instead of altering the files directly
+        //for (int i = 0; i < genes.Length; i++)
+        //{
+        //    genes[i].attribute = genes[i].attribute.Duplicate();
+        //    genes[i].attribute.value = genes[i].attribute.startValue;
+        //}
     }
 
     // run once when this rabbit is created to pass down the genes of the parents

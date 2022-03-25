@@ -4,27 +4,85 @@ using UnityEngine;
 
 public class RabbitManager : MonoBehaviour
 {
-    public Rabbit rabbitPrefab;
     public static RabbitManager singleton;
 
-    public int StartingNoOfRabbits;
+    [SerializeField] private Rabbit rabbitPrefab;
+    [SerializeField] private float mapSize = 10.0f;
+    [SerializeField] private int numberOfRabbitsOnStartup = 5;
+    [SerializeField] private int ySpawnOffset = 10;
+    [SerializeField] private Rabbit.Gene[] viableGenes;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         singleton = this;
 
         // create x rabbits at random positions on the map (x = StartingNoOfRabbits)
         // raycast down as to spawn them on the ground
-          // each rabbit has 3 modified genes: +2, -1, -1
-          // all other genes are set to their default value
+        // each rabbit has 3 modified genes: +2, -1, -1
+        // all other genes are set to their default value
+        for (int i = 0; i < numberOfRabbitsOnStartup; i++)
+        {
+            Rabbit.Gene[] copyGenes = new Rabbit.Gene[viableGenes.Length];
+            for (int g = 0; g < viableGenes.Length; g++)
+            {
+                copyGenes[g].attribute = viableGenes[g].attribute.Duplicate();
+                copyGenes[g].attribute.value = viableGenes[g].attribute.startValue;
+            }
 
+            Vector3 randPos;
+            do
+            {
+                float randX = Random.Range(-mapSize, mapSize);
+                float randZ = Random.Range(-mapSize, mapSize);
+                randPos = new Vector3(randX, ySpawnOffset, randZ);
+            }
+            while (!Eco.isValidGround(randPos));
+
+            // select 3 different indexes randomly
+            int attribute1 = RandomIndex(new int[0]);
+            int attribute2 = RandomIndex(new int[] { attribute1 });
+            int attribute3 = RandomIndex(new int[] { attribute1 , attribute2});
+
+            // edit the modifiers of the randomly selected genes
+            copyGenes[attribute1].modifier = 2;
+            copyGenes[attribute2].modifier = -1;
+            copyGenes[attribute3].modifier = -1;
+
+            // spawn the rabbit with the genes and position defiend above
+            Rabbit r = Instantiate(singleton.rabbitPrefab, randPos, Quaternion.identity);
+            r.NewRabbit(copyGenes);
+        }
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         
+    }
+
+    int RandomIndex(int[] avoidedNumbers)
+    {
+        int error = 0;
+        int rand;
+        do
+        {
+            error++;
+            rand = Random.Range(0, viableGenes.Length);
+
+            if (error > 100) return error;
+        }
+        while (Contains(avoidedNumbers, rand));
+        return rand;
+    }
+
+    bool Contains(int[] array, int value)
+    {
+        foreach(int item in array)
+        {
+            if (item == value) return true;
+        }
+        return false;
     }
 
 
