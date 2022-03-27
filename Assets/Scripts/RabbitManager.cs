@@ -6,6 +6,8 @@ public class RabbitManager : MonoBehaviour
 {
     public static RabbitManager singleton;
 
+    public static List<Rabbit> rabbits = new List<Rabbit>();
+
     [SerializeField] private Rabbit rabbitPrefab;
     [SerializeField] private float mapSize = 10.0f;
     [SerializeField] private int numberOfRabbitsOnStartup = 5;
@@ -41,8 +43,8 @@ public class RabbitManager : MonoBehaviour
 
             // select 3 different indexes randomly
             int attribute1 = RandomIndex(new int[0]);
-            int attribute2 = RandomIndex(new int[] { attribute1 });
-            int attribute3 = RandomIndex(new int[] { attribute1 , attribute2});
+            int attribute2 = RandomIndex( new int[] { attribute1 });
+            int attribute3 = RandomIndex( new int[] { attribute1 , attribute2});
 
             // edit the modifiers of the randomly selected genes
             copyGenes[attribute1].modifier = 2;
@@ -52,16 +54,47 @@ public class RabbitManager : MonoBehaviour
             // spawn the rabbit with the genes and position defiend above
             Rabbit r = Instantiate(singleton.rabbitPrefab, randPos, Quaternion.identity);
             r.NewRabbit(copyGenes);
+            rabbits.Add(r);
         }
     }
 
 
     void Update()
     {
-        
+
     }
 
-    int RandomIndex(int[] avoidedNumbers)
+    public enum GenderSearch
+    {
+        Male, Female, NoPreference
+    };
+    public static Rabbit RandomRabbit(GenderSearch genderPreference)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            if(genderPreference == GenderSearch.NoPreference)
+                // select and return a random rabbit from rabbits list
+                return rabbits[Random.Range(0, rabbits.Count)];
+            else
+            {
+                Rabbit r = rabbits[Random.Range(0, rabbits.Count)];
+                if(    r.gender == Rabbit.Gender.Male
+                    && genderPreference == GenderSearch.Male)
+                {
+                    return r;
+                }
+                else if (r.gender == Rabbit.Gender.Female
+                    && genderPreference == GenderSearch.Female)
+                {
+                    return r;
+                }
+            }
+        }
+        // if after 100 tries, no match was foun, return null
+        return null;
+    }
+
+    int RandomIndex(int[] avoidedNumbers )
     {
         int error = 0;
         int rand;
