@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Water
   - Land
+  - Food
+  - WaterBorder
+  - Rabbit
+  - Fox
   layers:
   - Default
   - TransparentFX

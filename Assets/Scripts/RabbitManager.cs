@@ -12,7 +12,6 @@ public class RabbitManager : MonoBehaviour
     [SerializeField] private float mapSize = 10.0f;
     [SerializeField] private int numberOfRabbitsOnStartup = 5;
     [SerializeField] private int ySpawnOffset = 10;
-    [SerializeField] private Rabbit.Gene[] viableGenes;
 
 
     void Start()
@@ -25,21 +24,22 @@ public class RabbitManager : MonoBehaviour
         // all other genes are set to their default value
         for (int i = 0; i < numberOfRabbitsOnStartup; i++)
         {
-            Rabbit.Gene[] copyGenes = new Rabbit.Gene[viableGenes.Length];
+            Gene[] viableGenes = GeneManager.GetViableGenes();
+            Gene[] copyGenes = new Gene[viableGenes.Length];
             for (int g = 0; g < viableGenes.Length; g++)
             {
-                copyGenes[g].attribute = viableGenes[g].attribute.Duplicate();
-                copyGenes[g].attribute.value = viableGenes[g].attribute.startValue;
+                copyGenes[g] = Gene.Copy(viableGenes[g]);
             }
 
             Vector3 randPos;
+            Vector3 groundPos;
             do
             {
                 float randX = Random.Range(-mapSize, mapSize);
                 float randZ = Random.Range(-mapSize, mapSize);
                 randPos = new Vector3(randX, ySpawnOffset, randZ);
             }
-            while (!Eco.isValidGround(randPos));
+            while (!Eco.isValidGround(randPos, out groundPos));
 
             // select 3 different indexes randomly
             int attribute1 = RandomIndex(new int[0]);
@@ -47,12 +47,12 @@ public class RabbitManager : MonoBehaviour
             int attribute3 = RandomIndex( new int[] { attribute1 , attribute2});
 
             // edit the modifiers of the randomly selected genes
-            copyGenes[attribute1].modifier = 2;
-            copyGenes[attribute2].modifier = -1;
-            copyGenes[attribute3].modifier = -1;
+            copyGenes[attribute1].SetModifier(2);
+            copyGenes[attribute2].SetModifier(-1);
+            copyGenes[attribute3].SetModifier(-1);
 
             // spawn the rabbit with the genes and position defiend above
-            Rabbit r = Instantiate(singleton.rabbitPrefab, randPos, Quaternion.identity);
+            Rabbit r = Instantiate(singleton.rabbitPrefab, groundPos + new Vector3(0,5,0), Quaternion.identity);
             r.NewRabbit(copyGenes);
             rabbits.Add(r);
         }
@@ -101,7 +101,7 @@ public class RabbitManager : MonoBehaviour
         do
         {
             error++;
-            rand = Random.Range(0, viableGenes.Length);
+            rand = Random.Range(0, GeneManager.GetViableGenes().Length);
 
             if (error > 100) return error;
         }
@@ -119,7 +119,7 @@ public class RabbitManager : MonoBehaviour
     }
 
 
-    public static void CreateRabbit(Rabbit.Gene[] genes, Vector3 pos)
+    public static void CreateRabbit(Gene[] genes, Vector3 pos)
     {
         // instantiate a new rabit prefab at position pos
         Rabbit r = Instantiate(singleton.rabbitPrefab, pos, Quaternion.identity);
