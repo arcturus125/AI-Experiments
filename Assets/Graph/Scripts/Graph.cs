@@ -10,7 +10,6 @@ public class Graph : MonoBehaviour
 {
     [SerializeField] private Sprite _pointSprite;
     [SerializeField] private GameObject _containerTemplate;
-    [SerializeField] private int _maxXLabels = 12;
     [SerializeField] private bool _showDots = false;
     [SerializeField] private Color _lineColour = new Color(1, 1, 1, 0.5f);
 
