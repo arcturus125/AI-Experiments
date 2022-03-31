@@ -444,8 +444,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pointSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   _containerTemplate: {fileID: 1237167553}
-  _labelTemplateX: {fileID: 1303818561}
-  _labelTemplateY: {fileID: 170015718}
   _maxXLabels: 12
   _showDots: 0
   _lineColour: {r: 1, g: 1, b: 1, a: 0.5}
@@ -1118,3 +1116,7 @@ MonoBehaviour:
   - {r: 0, g: 0, b: 1, a: 0.5}
   - {r: 1, g: 1, b: 0, a: 0.5}
   - {r: 1, g: 1, b: 1, a: 0.5}
+  _containerTemplate: {fileID: 1237167553}
+  _maxXLabels: 12
+  _labelTemplateX: {fileID: 1303818561}
+  _labelTemplateY: {fileID: 170015718}

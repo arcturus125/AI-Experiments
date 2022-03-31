@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Tracked float", menuName = "Graph/Track", order = 1)]
 public class Track : ScriptableObject
 {
-    [SerializeField] private float _newValue = 0;
+    private float _newValue = 0;
 
     public float NewValue
     {

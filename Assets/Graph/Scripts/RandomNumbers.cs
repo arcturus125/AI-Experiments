@@ -31,7 +31,6 @@ public class RandomNumbers : MonoBehaviour
 
         if (frame >= 50)
         {
-            Debug.Log(frame);
             _startLate.NewValue = (Random.Range(0, 100));
         }
 

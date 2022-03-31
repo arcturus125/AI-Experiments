@@ -10,15 +10,12 @@ public class Graph : MonoBehaviour
 {
     [SerializeField] private Sprite _pointSprite;
     [SerializeField] private GameObject _containerTemplate;
-    [SerializeField] private RectTransform _labelTemplateX;
-    [SerializeField] private RectTransform _labelTemplateY;
     [SerializeField] private int _maxXLabels = 12;
     [SerializeField] private bool _showDots = false;
     [SerializeField] private Color _lineColour = new Color(1, 1, 1, 0.5f);
 
     private GameObject _container;
     private List<float> _values;
-    private bool _drawAxis = false;
     
     public Color LineColour
     {
@@ -26,10 +23,9 @@ public class Graph : MonoBehaviour
         set { _lineColour = value; }
     }
 
-    public bool DrawAxis
+    public List<float> Values
     {
-        get { return _drawAxis; }
-        set { _drawAxis = value; }
+        get { return _values; }
     }
 
     public void AddValue(float value)
@@ -41,12 +37,6 @@ public class Graph : MonoBehaviour
     private void Awake()
     {
         _values = new List<float>() {0};
-        CreateGraph(_values);
-    }
-
-    private void Update()
-    {
-        //_values.Add(Random.Range(0, 100));
         CreateGraph(_values);
     }
 
@@ -86,8 +76,6 @@ public class Graph : MonoBehaviour
         yMax += yDifference * 0.1f; //Add 10% space at top of graph
 
         //Create points
-        float labelStep = Mathf.Ceil(values.Count / _maxXLabels) + 1;
-        //Debug.Log("Num: " + values.Count + " Step: " + labelStep);
         float xStep = graphWidth / (values.Count + 1);
         int xIndex = 0;
         GameObject prevPoint = null;
@@ -104,36 +92,7 @@ public class Graph : MonoBehaviour
 
             prevPoint = point;
 
-            if (_drawAxis)
-            {
-                //X axis labels
-                if (values.Count <= _maxXLabels || i % labelStep == 0)
-                {
-                    RectTransform labelX = Instantiate(_labelTemplateX);
-                    labelX.SetParent(_container.GetComponent<RectTransform>());
-                    labelX.gameObject.SetActive(true);
-                    labelX.anchoredPosition = new Vector2(xPos, -7);
-                    labelX.GetComponent<Text>().text = "Day " + i.ToString();
-                }
-            }
-
             xIndex++;
-        }
-
-        if (_drawAxis)
-        {
-            //Y axis labels
-            int separatorCount = 10;
-            for (int i = 0; i <= separatorCount; i++)
-            {
-                RectTransform labelY = Instantiate(_labelTemplateY);
-                labelY.SetParent(_container.GetComponent<RectTransform>());
-                labelY.gameObject.SetActive(true);
-
-                float normalized = (float)i / separatorCount;
-                labelY.anchoredPosition = new Vector2(-7, normalized * graphHeight);
-                labelY.GetComponent<Text>().text = Mathf.RoundToInt(yMin + (normalized * (yMax - yMin))).ToString();
-            }
         }
     }
 
