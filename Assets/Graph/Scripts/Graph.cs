@@ -46,11 +46,14 @@ public class Graph : MonoBehaviour
         {
             Destroy(_container);
         }
-        _container = Instantiate(_containerTemplate);
+        _container = Instantiate(_containerTemplate,this.transform);
+
         RectTransform containerRectTransform = _container.GetComponent<RectTransform>();
         containerRectTransform.SetParent(_containerTemplate.GetComponent<RectTransform>().parent);
         containerRectTransform.anchoredPosition = _containerTemplate.GetComponent<RectTransform>().anchoredPosition;
         _container.SetActive(true);
+        _container.transform.localScale = Vector3.one;
+        containerRectTransform.localScale = Vector3.one;
 
         //Get max height
         float graphWidth = containerRectTransform.sizeDelta.x;

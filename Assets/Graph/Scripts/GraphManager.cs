@@ -32,9 +32,9 @@ public class GraphManager : MonoBehaviour
         foreach (var value in _trackedValues)
         {
             //Create new graph
-            GameObject newGraph = Instantiate(_graphTemplate);
+            GameObject newGraph = Instantiate(_graphTemplate, this.transform);
             _graphs.Add(newGraph);
-
+            newGraph.transform.localScale = Vector3.one;
             //Position graph
             RectTransform rectTransform = newGraph.GetComponent<RectTransform>();
             rectTransform.SetParent(_graphTemplate.GetComponent<RectTransform>().parent);
@@ -65,11 +65,12 @@ public class GraphManager : MonoBehaviour
         {
             Destroy(_container);
         }
-        _container = Instantiate(_containerTemplate);
+        _container = Instantiate(_containerTemplate, this.transform);
         RectTransform containerRectTransform = _container.GetComponent<RectTransform>();
         containerRectTransform.SetParent(_containerTemplate.GetComponent<RectTransform>().parent);
         containerRectTransform.anchoredPosition = _containerTemplate.GetComponent<RectTransform>().anchoredPosition;
-        
+        _container.transform.localScale = Vector3.one;
+
 
         float graphWidth = containerRectTransform.sizeDelta.x;
         float graphHeight = containerRectTransform.sizeDelta.y;
@@ -109,8 +110,13 @@ public class GraphManager : MonoBehaviour
                 RectTransform labelX = Instantiate(_labelTemplateX);
                 labelX.SetParent(_container.GetComponent<RectTransform>());
                 labelX.gameObject.SetActive(true);
-                labelX.anchoredPosition = new Vector2(xPos, -7);
+
+                labelX.anchoredPosition3D = new Vector3(xPos, -7,0); // set the position in 3d space rather than 2d
+                labelX.localScale = Vector3.one; // reset the scale of the graph
+                labelX.rotation = transform.parent.rotation; // the text should have the same rotation as the graph
+
                 labelX.GetComponent<Text>().text = "Day " + i.ToString();
+
             }
             xIndex++;
         }
@@ -124,7 +130,9 @@ public class GraphManager : MonoBehaviour
             labelY.gameObject.SetActive(true);
 
             float normalized = (float)i / separatorCount;
-            labelY.anchoredPosition = new Vector2(-7, normalized * graphHeight);
+            labelY.anchoredPosition3D = new Vector3(-7, normalized * graphHeight, 0);
+            labelY.localScale = Vector3.one;
+            labelY.rotation = transform.parent.rotation;
             labelY.GetComponent<Text>().text = Mathf.RoundToInt(yMin + (normalized * (yMax - yMin))).ToString();
         }
 
