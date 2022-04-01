@@ -6,7 +6,7 @@ public class Food : MonoBehaviour
 {
     public float timeToGrow = 1.0f;
     public int numUses = 1;
-    int uses;
+    public int uses;
 
 
     float growth = 0;
@@ -30,7 +30,7 @@ public class Food : MonoBehaviour
         }
         else
         {
-            float percent = uses / numUses;
+            float percent =  (float)uses / (float)numUses;
             transform.localScale = new Vector3(percent, percent, percent);
         }
 
@@ -41,8 +41,8 @@ public class Food : MonoBehaviour
 
     public void Eat()
     {
-        numUses--;
-        if (numUses <= 0)
+        uses--;
+        if (uses <= 0)
             Destroy(this.gameObject);
     }
 }
